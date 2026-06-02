@@ -88,13 +88,13 @@
             color: #ffffff;
             padding: 8px;
             border: 1px solid #0891b2;
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .results-table td {
             padding: 8px;
             border: 1px solid #d1d5db;
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .results-table tr:nth-child(even) {
@@ -104,6 +104,25 @@
         .result-value {
             font-weight: bold;
             color: #111827;
+        }
+
+        .estado-alto {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .estado-bajo {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .estado-normal {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .estado-nd {
+            color: #6b7280;
         }
 
         .signature {
@@ -138,7 +157,6 @@
 
 <body>
 
-    <!-- ENCABEZADO -->
     <table class="header">
         <tr>
             <td width="18%">
@@ -163,7 +181,6 @@
         INFORME DE RESULTADOS DE LABORATORIO
     </div>
 
-    <!-- DATOS DEL PACIENTE -->
     <div class="section-title">
         Datos del Paciente
     </div>
@@ -201,7 +218,6 @@
         </tr>
     </table>
 
-    <!-- RESULTADOS -->
     @foreach($solicitud->detalles as $detalle)
 
         <div class="section-title">
@@ -211,10 +227,11 @@
         <table class="results-table">
             <thead>
                 <tr>
-                    <th width="35%">Parámetro</th>
-                    <th width="20%">Resultado</th>
-                    <th width="20%">Unidad</th>
-                    <th width="25%">Valor de Referencia</th>
+                    <th width="28%">Parámetro</th>
+                    <th width="18%">Resultado</th>
+                    <th width="17%">Unidad</th>
+                    <th width="22%">Valor de Referencia</th>
+                    <th width="15%">Interpretación</th>
                 </tr>
             </thead>
 
@@ -234,6 +251,18 @@
                         <td>
                             {{ $resultado->parametro->valor_referencia ?? 'N/D' }}
                         </td>
+
+                        <td>
+                            @if($resultado->interpretacion == 'Alto')
+                                <span class="estado-alto">Alto</span>
+                            @elseif($resultado->interpretacion == 'Bajo')
+                                <span class="estado-bajo">Bajo</span>
+                            @elseif($resultado->interpretacion == 'Normal')
+                                <span class="estado-normal">Normal</span>
+                            @else
+                                <span class="estado-nd">N/D</span>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -241,14 +270,12 @@
 
     @endforeach
 
-    <!-- FIRMA -->
     <div class="signature">
         <div class="signature-line"></div>
         <strong>Responsable de Laboratorio</strong><br>
         SIGLAB
     </div>
 
-    <!-- NOTA -->
     <div class="note">
         Este documento contiene información clínica confidencial y ha sido generado automáticamente por SIGLAB.
         Los resultados deben ser interpretados por personal médico calificado de acuerdo con el estado clínico del paciente.

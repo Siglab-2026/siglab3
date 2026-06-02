@@ -9,116 +9,119 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ResultadoController extends Controller
 {
-
-   public function guardar(Request $request)
-{
-
-    $solicitud = null;
-
-    foreach ($request->resultados as $detalleId => $parametros)
+    private function interpretarResultado($valor, $referencia)
     {
-
-        foreach ($parametros as $parametroId => $valor)
-        {
-
-            Resultado::create([
-
-                'solicitud_detalle_id' => $detalleId,
-
-                'parametro_examen_id' => $parametroId,
-
-                'resultado' => $valor,
-            ]);
+        if (!$valor || !$referencia) {
+            return null;
         }
 
-        // OBTENER SOLICITUD
+        $valor = str_replace(',', '.', trim($valor));
+        $referencia = str_replace(',', '.', trim($referencia));
 
-        $detalle = \App\Models\SolicitudDetalle::find($detalleId);
+        if (!is_numeric($valor)) {
+            return null;
+        }
 
-        $solicitud = $detalle->solicitud;
+        if (preg_match('/^([\d.]+)\s*-\s*([\d.]+)$/', $referencia, $m)) {
+            $min = (float) $m[1];
+            $max = (float) $m[2];
+            $valorNumerico = (float) $valor;
+
+            if ($valorNumerico < $min) {
+                return 'Bajo';
+            }
+
+            if ($valorNumerico > $max) {
+                return 'Alto';
+            }
+
+            return 'Normal';
+        }
+
+        return null;
     }
 
-    // CAMBIAR A FINALIZADO
-
-    if($solicitud)
+    private function agregarInterpretacion($solicitud)
     {
-        $solicitud->estado = 'finalizado';
+        foreach ($solicitud->detalles as $detalle) {
+            foreach ($detalle->resultados as $resultado) {
+                $resultado->interpretacion = $this->interpretarResultado(
+                    $resultado->resultado,
+                    $resultado->parametro->valor_referencia ?? null
+                );
+            }
+        }
 
-        $solicitud->save();
+        return $solicitud;
     }
 
-    return redirect()
-        ->route('solicitudes.index')
-        ->with(
-            'success',
-            'Resultados guardados correctamente'
-        );
-}
-
-    public function captura($id)
-{
-
-    $solicitud = Solicitud::with(
-        'detalles.examen.parametros',
-        'detalles.resultados'
-    )->findOrFail($id);
-
-    // VALIDAR SI YA ESTA FINALIZADO
-
-    if($solicitud->estado == 'finalizado')
+    public function guardar(Request $request)
     {
+        $solicitud = null;
+
+        foreach ($request->resultados as $detalleId => $parametros) {
+            foreach ($parametros as $parametroId => $valor) {
+                Resultado::create([
+                    'solicitud_detalle_id' => $detalleId,
+                    'parametro_examen_id' => $parametroId,
+                    'resultado' => $valor,
+                ]);
+            }
+
+            $detalle = \App\Models\SolicitudDetalle::find($detalleId);
+            $solicitud = $detalle->solicitud;
+        }
+
+        if ($solicitud) {
+            $solicitud->estado = 'finalizado';
+            $solicitud->save();
+        }
+
         return redirect()
             ->route('solicitudes.index')
-            ->with(
-                'error',
-                'Los resultados ya fueron registrados y no pueden modificarse.'
-            );
+            ->with('success', 'Resultados guardados correctamente');
     }
 
-    return view(
-        'resultados.captura',
-        compact('solicitud')
-    );
-}
+    public function captura($id)
+    {
+        $solicitud = Solicitud::with(
+            'detalles.examen.parametros',
+            'detalles.resultados'
+        )->findOrFail($id);
+
+        if ($solicitud->estado == 'finalizado') {
+            return redirect()
+                ->route('solicitudes.index')
+                ->with('error', 'Los resultados ya fueron registrados y no pueden modificarse.');
+        }
+
+        return view('resultados.captura', compact('solicitud'));
+    }
 
     public function show($id)
     {
-
         $solicitud = Solicitud::with([
-
             'detalles.examen',
-
             'detalles.resultados.parametro'
-
         ])->findOrFail($id);
 
-        return view(
-            'resultados.show',
-            compact('solicitud')
-        );
+        $solicitud = $this->agregarInterpretacion($solicitud);
+
+        return view('resultados.show', compact('solicitud'));
     }
 
     public function pdf($id)
     {
-
         $solicitud = Solicitud::with([
-
             'paciente.user',
-
             'detalles.examen',
-
             'detalles.resultados.parametro'
-
         ])->findOrFail($id);
 
-        $pdf = Pdf::loadView(
-            'resultados.pdf',
-            compact('solicitud')
-        );
+        $solicitud = $this->agregarInterpretacion($solicitud);
 
-        return $pdf->download(
-            'resultado_'.$solicitud->id.'.pdf'
-        );
+        $pdf = Pdf::loadView('resultados.pdf', compact('solicitud'));
+
+        return $pdf->download('resultado_'.$solicitud->id.'.pdf');
     }
-
 }
