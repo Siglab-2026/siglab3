@@ -11,9 +11,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD
+|--------------------------------------------------------------------------
+| Se quitó temporalmente el middleware 'verified'
+| para evitar dependencia del correo SMTP.
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +32,12 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    // PERFIL USUARIO
+    /*
+    |--------------------------------------------------------------------------
+    | PERFIL USUARIO
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
@@ -33,7 +47,12 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
-    // SOLICITUDES
+    /*
+    |--------------------------------------------------------------------------
+    | SOLICITUDES
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/solicitudes/nueva', [SolicitudController::class, 'create'])
         ->name('solicitudes.create');
 
@@ -52,7 +71,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/solicitudes/{id}/pago', [SolicitudController::class, 'actualizarPago'])
         ->name('solicitudes.pago');
 
-    // RESULTADOS
+    /*
+    |--------------------------------------------------------------------------
+    | RESULTADOS
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/resultados/{id}/captura', [ResultadoController::class, 'captura'])
         ->middleware('role:laboratorista')
         ->name('resultados.captura');
@@ -66,7 +90,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/resultados/{id}/pdf', [ResultadoController::class, 'pdf'])
         ->name('resultados.pdf');
 
-    // PACIENTE
+    /*
+    |--------------------------------------------------------------------------
+    | PACIENTE
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/mi-perfil-clinico', [PacienteController::class, 'perfil'])
         ->name('pacientes.perfil');
 
@@ -76,14 +105,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mi-historial-clinico', [PacienteController::class, 'historial'])
         ->name('pacientes.historial');
 
-    // ADMINISTRADOR
+    /*
+    |--------------------------------------------------------------------------
+    | ADMINISTRADOR
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
         ->middleware('role:administrador')
         ->name('admin.dashboard');
 
-        Route::get('/admin/reportes/produccion', [AdminController::class, 'reporteProduccion'])
-    ->middleware('role:administrador')
-    ->name('admin.reportes.produccion');
+    Route::get('/admin/reportes/produccion', [AdminController::class, 'reporteProduccion'])
+        ->middleware('role:administrador')
+        ->name('admin.reportes.produccion');
 
 });
 
