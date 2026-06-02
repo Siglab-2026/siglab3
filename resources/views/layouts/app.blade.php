@@ -170,6 +170,16 @@
             <!-- PACIENTE -->
 
             @if(Auth::user()->role->nombre == 'paciente')
+<a href="{{ route('pacientes.conoce-siglab') }}"
+   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+
+    <i class="fa-solid fa-circle-play text-lg min-w-[20px]"></i>
+
+    <span x-show="open || mobile" x-transition>
+        Conoce SIGLAB
+    </span>
+
+</a>
 
                 <a href="{{ route('solicitudes.index') }}"
                    class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
@@ -198,6 +208,7 @@
                         Mi Perfil Clínico
 
                     </span>
+
 
                 </a>
 

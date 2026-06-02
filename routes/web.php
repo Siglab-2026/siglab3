@@ -105,6 +105,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mi-historial-clinico', [PacienteController::class, 'historial'])
         ->name('pacientes.historial');
 
+    Route::get('/conoce-siglab', function () {
+    return view('pacientes.conoce-siglab');
+})->name('pacientes.conoce-siglab');
+
     /*
     |--------------------------------------------------------------------------
     | ADMINISTRADOR
