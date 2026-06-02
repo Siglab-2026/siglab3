@@ -56,7 +56,7 @@ class SolicitudController extends Controller
         }
 
         return redirect()
-            ->route('solicitudes.create')
+            ->route('dashboard')
             ->with('success', 'Solicitud creada correctamente');
     }
 
