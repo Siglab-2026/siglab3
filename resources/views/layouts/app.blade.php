@@ -181,6 +181,17 @@
 
 </a>
 
+<a href="{{ route('pacientes.como-funciona') }}"
+   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+
+    <i class="fa-solid fa-gears text-lg min-w-[20px]"></i>
+
+    <span x-show="open || mobile" x-transition>
+        ¿Cómo funciona?
+    </span>
+
+</a>
+
                 <a href="{{ route('solicitudes.index') }}"
                    class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
 

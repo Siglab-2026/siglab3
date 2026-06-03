@@ -47,6 +47,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
+        
+
     /*
     |--------------------------------------------------------------------------
     | SOLICITUDES
@@ -108,6 +110,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/conoce-siglab', function () {
     return view('pacientes.conoce-siglab');
 })->name('pacientes.conoce-siglab');
+
+Route::get('/como-funciona', function () {
+    return view('pacientes.como-funciona');
+})->name('pacientes.como-funciona');
 
     /*
     |--------------------------------------------------------------------------
