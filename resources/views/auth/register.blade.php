@@ -41,17 +41,61 @@
             <x-input-error :messages="$errors->get('telefono')" class="mt-1" />
         </div>
 
+        <!-- CONTRASEÑA -->
         <div class="mt-3">
             <x-input-label for="password" :value="__('Contraseña')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password"
-                name="password" required autocomplete="new-password" />
+
+            <div class="relative">
+
+                <x-text-input
+                    id="password"
+                    class="block mt-1 w-full pr-10"
+                    type="password"
+                    name="password"
+                    required
+                    autocomplete="new-password"
+                />
+
+                <button
+                    type="button"
+                    onclick="togglePassword('password', 'icon-password')"
+                    class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-cyan-600">
+
+                    <i id="icon-password" class="fa-solid fa-eye"></i>
+
+                </button>
+
+            </div>
+
             <x-input-error :messages="$errors->get('password')" class="mt-1" />
         </div>
 
+        <!-- CONFIRMAR CONTRASEÑA -->
         <div class="mt-3">
             <x-input-label for="password_confirmation" :value="__('Confirmar contraseña')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
-                name="password_confirmation" required autocomplete="new-password" />
+
+            <div class="relative">
+
+                <x-text-input
+                    id="password_confirmation"
+                    class="block mt-1 w-full pr-10"
+                    type="password"
+                    name="password_confirmation"
+                    required
+                    autocomplete="new-password"
+                />
+
+                <button
+                    type="button"
+                    onclick="togglePassword('password_confirmation', 'icon-password-confirm')"
+                    class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-cyan-600">
+
+                    <i id="icon-password-confirm" class="fa-solid fa-eye"></i>
+
+                </button>
+
+            </div>
+
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1" />
         </div>
 
@@ -68,5 +112,30 @@
         </div>
 
     </form>
+
+    <script>
+        function togglePassword(inputId, iconId) {
+
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === 'password') {
+
+                input.type = 'text';
+
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+
+            } else {
+
+                input.type = 'password';
+
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+
+            }
+
+        }
+    </script>
 
 </x-guest-layout>

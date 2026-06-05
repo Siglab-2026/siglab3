@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Password;
+
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\ResultadoController;
@@ -14,9 +19,6 @@ Route::get('/', function () {
 /*
 |--------------------------------------------------------------------------
 | DASHBOARD
-|--------------------------------------------------------------------------
-| Se quitó temporalmente el middleware 'verified'
-| para evitar dependencia del correo SMTP.
 |--------------------------------------------------------------------------
 */
 
@@ -47,7 +49,40 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
-        
+    /*
+    |--------------------------------------------------------------------------
+    | CAMBIAR CONTRASEÑA
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/cambiar-password', function () {
+        return view('auth.cambiar-password');
+    })->name('password.change');
+
+    Route::post('/cambiar-password', function (Request $request) {
+
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()
+            ->route('login')
+            ->with(
+                'success',
+                'Contraseña actualizada correctamente. Inicie sesión nuevamente.'
+            );
+
+    })->name('password.change.update');
 
     /*
     |--------------------------------------------------------------------------
@@ -108,12 +143,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('pacientes.historial');
 
     Route::get('/conoce-siglab', function () {
-    return view('pacientes.conoce-siglab');
-})->name('pacientes.conoce-siglab');
+        return view('pacientes.conoce-siglab');
+    })->name('pacientes.conoce-siglab');
 
-Route::get('/como-funciona', function () {
-    return view('pacientes.como-funciona');
-})->name('pacientes.como-funciona');
+    Route::get('/como-funciona', function () {
+        return view('pacientes.como-funciona');
+    })->name('pacientes.como-funciona');
 
     /*
     |--------------------------------------------------------------------------

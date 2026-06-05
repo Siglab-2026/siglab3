@@ -62,19 +62,31 @@
             </div>
 
             <!-- BOTON NUEVA SOLICITUD SOLO PACIENTE -->
+<div class="flex flex-wrap gap-2">
 
-            @if(Auth::user()->role->nombre == 'paciente')
+<a href="{{ route('solicitudes.index') }}"
+   class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl shadow transition text-center">
 
-                <a href="{{ route('solicitudes.create') }}"
-                   class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl shadow transition text-center">
+    <i class="fa-solid fa-rotate-right"></i>
 
-                    <i class="fa-solid fa-plus"></i>
+    Actualizar
 
-                    Nueva Solicitud
+</a>
 
-                </a>
+    @if(Auth::user()->role->nombre == 'paciente')
 
-            @endif
+        <a href="{{ route('solicitudes.create') }}"
+           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl shadow transition text-center">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Nueva Solicitud
+
+        </a>
+
+    @endif
+
+</div>
 
         </div>
 

@@ -77,9 +77,14 @@
 
                 <div class="text-end">
 
-                    <button class="btn btn-success">
-                        Guardar Resultados
-                    </button>
+                    <button
+    type="submit"
+    onclick="return confirmarGuardar()"
+    class="btn btn-success">
+
+    Guardar resultados
+
+</button>
 
                 </div>
 
@@ -157,6 +162,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+</script>
+
+<script>
+function confirmarGuardar() {
+
+    return confirm(
+        '¿Está seguro de guardar los resultados?\n\nUna vez guardados, la solicitud será finalizada y los resultados no podrán modificarse.'
+    );
+
+}
 </script>
 
 </x-app-layout>

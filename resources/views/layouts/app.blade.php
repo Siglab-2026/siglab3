@@ -3,17 +3,15 @@
 
 <head>
     <meta charset="utf-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'SIGLAB') }}</title>
+
     <link rel="icon" href="{{ asset('favicon.ico') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
 
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap"
-          rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -29,52 +27,38 @@
 <div
     x-data="{
         open: window.innerWidth >= 768,
-        mobile: window.innerWidth < 768
-    }"
+        mobile: window.innerWidth < 768,
 
+        navegar(url) {
+            if (this.mobile) {
+                this.open = false;
+            }
+
+            window.location.href = url;
+        }
+    }"
     x-init="
         window.addEventListener('resize', () => {
-
             mobile = window.innerWidth < 768;
 
-            if(mobile)
-            {
+            if (mobile) {
                 open = false;
             }
         });
     "
-
     class="flex min-h-screen">
 
-    <!-- SIDEBAR -->
-
     <aside
-
         :class="mobile
             ? (open ? 'translate-x-0 w-64' : '-translate-x-full w-64')
             : (open ? 'w-64' : 'w-20')"
-
-        class="fixed md:relative z-50
-               bg-cyan-700 text-white
-               flex flex-col
-               transition-all duration-300
-               min-h-screen
-               shadow-xl">
-
-        <!-- HEADER -->
+        class="fixed md:relative z-50 bg-cyan-700 text-white flex flex-col transition-all duration-300 min-h-screen shadow-xl">
 
         <div class="flex items-center justify-between p-4 border-b border-cyan-600">
 
-            <div
-                x-show="open || mobile"
-                x-transition
-                class="text-3xl font-bold tracking-wide whitespace-nowrap">
-
+            <div x-show="open || mobile" x-transition class="text-3xl font-bold tracking-wide whitespace-nowrap">
                 SIGLAB
-
             </div>
-
-            <!-- BOTON DESKTOP -->
 
             <button
                 @click="open = !open"
@@ -87,33 +71,24 @@
         </div>
 
         <!-- USUARIO ARRIBA SOLO MOVIL -->
-
         <div class="md:hidden p-4 border-b border-cyan-600 bg-cyan-800/40">
 
-            <div
-                x-show="open || mobile"
-                x-transition>
+            <div x-show="open || mobile" x-transition>
 
                 <div class="flex items-center gap-3 mb-3">
 
                     <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-
                         <i class="fa-solid fa-user text-white"></i>
-
                     </div>
 
                     <div class="overflow-hidden">
 
                         <div class="text-sm font-semibold truncate">
-
                             {{ Auth::user()->name }}
-
                         </div>
 
                         <div class="text-xs text-cyan-200 capitalize">
-
                             {{ Auth::user()->role->nombre }}
-
                         </div>
 
                     </div>
@@ -122,9 +97,7 @@
 
             </div>
 
-            <form method="POST"
-                  action="{{ route('logout') }}">
-
+            <form method="POST" action="{{ route('logout') }}">
                 @csrf
 
                 <button
@@ -132,12 +105,8 @@
 
                     <i class="fa-solid fa-right-from-bracket"></i>
 
-                    <span
-                        x-show="open || mobile"
-                        x-transition>
-
+                    <span x-show="open || mobile" x-transition>
                         Cerrar Sesión
-
                     </span>
 
                 </button>
@@ -147,186 +116,161 @@
         </div>
 
         <!-- MENU -->
-
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
 
-            <!-- DASHBOARD -->
-
             <a href="{{ route('dashboard') }}"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+               @click.prevent="navegar($el.href)"
+               class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
 
                 <i class="fa-solid fa-house text-lg min-w-[20px]"></i>
 
-                <span
-                    x-show="open || mobile"
-                    x-transition>
-
+                <span x-show="open || mobile" x-transition>
                     Inicio
-
                 </span>
 
             </a>
 
-            <!-- PACIENTE -->
-
             @if(Auth::user()->role->nombre == 'paciente')
-<a href="{{ route('pacientes.conoce-siglab') }}"
-   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
 
-    <i class="fa-solid fa-circle-play text-lg min-w-[20px]"></i>
+                <a href="{{ route('pacientes.conoce-siglab') }}"
+                   @click.prevent="navegar($el.href)"
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
 
-    <span x-show="open || mobile" x-transition>
-        Conoce SIGLAB
-    </span>
+                    <i class="fa-solid fa-circle-play text-lg min-w-[20px]"></i>
 
-</a>
+                    <span x-show="open || mobile" x-transition>
+                        Conoce SIGLAB
+                    </span>
 
-<a href="{{ route('pacientes.como-funciona') }}"
-   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+                </a>
 
-    <i class="fa-solid fa-gears text-lg min-w-[20px]"></i>
+                <a href="{{ route('pacientes.como-funciona') }}"
+                   @click.prevent="navegar($el.href)"
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
 
-    <span x-show="open || mobile" x-transition>
-        ¿Cómo funciona?
-    </span>
+                    <i class="fa-solid fa-gears text-lg min-w-[20px]"></i>
 
-</a>
+                    <span x-show="open || mobile" x-transition>
+                        ¿Cómo funciona?
+                    </span>
+
+                </a>
 
                 <a href="{{ route('solicitudes.index') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+                   @click.prevent="navegar($el.href)"
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
 
                     <i class="fa-solid fa-file-medical text-lg min-w-[20px]"></i>
 
-                    <span
-                        x-show="open || mobile"
-                        x-transition>
-
+                    <span x-show="open || mobile" x-transition>
                         Mis Solicitudes
-
                     </span>
 
                 </a>
 
                 <a href="{{ route('pacientes.perfil') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+                   @click.prevent="navegar($el.href)"
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
 
                     <i class="fa-solid fa-user-doctor text-lg min-w-[20px]"></i>
 
-                    <span
-                        x-show="open || mobile"
-                        x-transition>
-
+                    <span x-show="open || mobile" x-transition>
                         Mi Perfil Clínico
-
                     </span>
-
 
                 </a>
 
                 <a href="{{ route('pacientes.historial') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+                   @click.prevent="navegar($el.href)"
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
 
                     <i class="fa-solid fa-clock-rotate-left text-lg min-w-[20px]"></i>
 
-                    <span
-                        x-show="open || mobile"
-                        x-transition>
-
+                    <span x-show="open || mobile" x-transition>
                         Mi Historial Clínico
-
                     </span>
 
                 </a>
 
             @endif
-
-            <!-- LABORATORISTA -->
 
             @if(Auth::user()->role->nombre == 'laboratorista')
 
                 <a href="{{ route('solicitudes.index') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+                   @click.prevent="navegar($el.href)"
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
 
                     <i class="fa-solid fa-vials text-lg min-w-[20px]"></i>
 
-                    <span
-                        x-show="open || mobile"
-                        x-transition>
-
+                    <span x-show="open || mobile" x-transition>
                         Solicitudes
-
                     </span>
 
                 </a>
 
             @endif
 
-            <!-- ADMIN -->
-
             @if(Auth::user()->role->nombre == 'administrador')
 
                 <a href="{{ route('admin.dashboard') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+                   @click.prevent="navegar($el.href)"
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
 
                     <i class="fa-solid fa-chart-line text-lg min-w-[20px]"></i>
 
-                    <span
-                        x-show="open || mobile"
-                        x-transition>
-
+                    <span x-show="open || mobile" x-transition>
                         Dashboard Admin
-
                     </span>
 
                 </a>
 
                 <a href="{{ route('admin.reportes.produccion') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition">
+                   @click.prevent="navegar($el.href)"
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
 
                     <i class="fa-solid fa-file-lines text-lg min-w-[20px]"></i>
 
-                    <span
-                        x-show="open || mobile"
-                        x-transition>
-
+                    <span x-show="open || mobile" x-transition>
                         Reporte Producción
-
                     </span>
 
                 </a>
 
             @endif
 
+            <a href="{{ route('password.change') }}"
+               @click.prevent="navegar($el.href)"
+               class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-cyan-600 transition cursor-pointer">
+
+                <i class="fa-solid fa-key text-lg min-w-[20px]"></i>
+
+                <span x-show="open || mobile" x-transition>
+                    Cambiar contraseña
+                </span>
+
+            </a>
+
         </nav>
 
         <!-- FOOTER SOLO DESKTOP -->
-
         <div class="hidden md:block p-4 border-t border-cyan-600 bg-cyan-800/40">
 
-            <div
-                x-show="open"
-                x-transition>
+            <div x-show="open" x-transition>
 
                 <div class="flex items-center gap-3 mb-3">
 
                     <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-
                         <i class="fa-solid fa-user text-white"></i>
-
                     </div>
 
                     <div class="overflow-hidden">
 
                         <div class="text-sm font-semibold truncate">
-
                             {{ Auth::user()->name }}
-
                         </div>
 
                         <div class="text-xs text-cyan-200 capitalize">
-
                             {{ Auth::user()->role->nombre }}
-
                         </div>
 
                     </div>
@@ -335,9 +279,7 @@
 
             </div>
 
-            <form method="POST"
-                  action="{{ route('logout') }}">
-
+            <form method="POST" action="{{ route('logout') }}">
                 @csrf
 
                 <button
@@ -345,12 +287,8 @@
 
                     <i class="fa-solid fa-right-from-bracket"></i>
 
-                    <span
-                        x-show="open"
-                        x-transition>
-
+                    <span x-show="open" x-transition>
                         Cerrar Sesión
-
                     </span>
 
                 </button>
@@ -362,7 +300,6 @@
     </aside>
 
     <!-- OVERLAY MOVIL -->
-
     <div
         x-show="mobile && open"
         x-transition.opacity
@@ -371,10 +308,7 @@
     </div>
 
     <!-- CONTENIDO -->
-
     <div class="flex-1 w-full">
-
-        <!-- HEADER -->
 
         <header class="bg-white shadow-sm md:hidden">
 
@@ -389,16 +323,12 @@
                 </button>
 
                 @isset($header)
-
                     {{ $header }}
-
                 @endisset
 
             </div>
 
         </header>
-
-        <!-- MAIN -->
 
         <main class="p-4 md:p-6">
 

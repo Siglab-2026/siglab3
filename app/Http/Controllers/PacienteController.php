@@ -38,9 +38,9 @@ class PacienteController extends Controller
             'alergias' => $request->alergias,
         ]);
 
-        return redirect()
-            ->back()
-            ->with('success', 'Perfil clínico actualizado correctamente.');
+      return redirect()
+    ->route('dashboard')
+    ->with('success', 'Perfil clínico actualizado correctamente');
     }
 
 public function historial()

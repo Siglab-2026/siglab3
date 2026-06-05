@@ -1,4 +1,11 @@
 <x-guest-layout>
+<div class="text-center mb-4">
+
+    <img src="{{ asset('images/logo.png') }}"
+         alt="SIGLAB"
+         class="mx-auto w-16 h-auto">
+
+</div>
 
     <div class="mb-4 text-center">
 
@@ -39,49 +46,40 @@
         <!-- Password -->
         <div class="mt-4">
 
-            <x-input-label for="password" :value="__('Contraseña')" />
+           <x-input-label for="password" :value="__('Contraseña')" />
 
-            <x-text-input id="password"
-                class="block mt-1 w-full"
-                type="password"
-                name="password"
-                required
-                autocomplete="current-password" />
+<div class="relative">
 
-            <x-input-error :messages="$errors->get('password')" class="mt-1" />
+    <x-text-input
+        id="password"
+        class="block mt-1 w-full pr-10"
+        type="password"
+        name="password"
+        required
+        autocomplete="current-password"
+    />
+
+    <button
+        type="button"
+        onclick="togglePassword('password', 'icon-password')"
+        class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-cyan-600">
+
+        <i id="icon-password" class="fa-solid fa-eye"></i>
+
+    </button>
+
+</div>
+
+<x-input-error :messages="$errors->get('password')" class="mt-1" />
 
         </div>
 
         <!-- Remember Me -->
-        <div class="block mt-4">
+        
 
-            <label for="remember_me" class="inline-flex items-center">
+        <div class="flex items-center justify-end mt-5">
 
-                <input id="remember_me"
-                    type="checkbox"
-                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                    name="remember">
-
-                <span class="ms-2 text-sm text-gray-600">
-                    Recuérdame
-                </span>
-
-            </label>
-
-        </div>
-
-        <div class="flex items-center justify-between mt-5">
-
-            @if (Route::has('password.request'))
-
-                <a class="text-sm text-gray-600 hover:text-gray-900"
-                   href="{{ route('password.request') }}">
-
-                    ¿Olvidaste tu contraseña?
-
-                </a>
-
-            @endif
+            
 
             <x-primary-button>
                 {{ __('Iniciar sesión') }}
@@ -90,5 +88,24 @@
         </div>
 
     </form>
+
+<script>
+function togglePassword(inputId, iconId) {
+
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
+
 
 </x-guest-layout>
