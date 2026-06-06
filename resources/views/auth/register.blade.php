@@ -1,6 +1,13 @@
 <x-guest-layout>
 
-    <div class="mb-4 text-center">
+     <div class="mb-6 text-center">
+
+        <img
+            src="{{ asset('images/logo.png') }}"
+            alt="SIGLAB"
+            class="mx-auto mb-3"
+            style="width:80px;">
+
         <h2 class="text-xl font-bold text-gray-800">
             Registro de Usuario
         </h2>
@@ -8,6 +15,7 @@
         <p class="text-sm text-gray-500 mt-1">
             Crea tu cuenta para acceder a SIGLAB
         </p>
+
     </div>
 
     <form method="POST" action="{{ route('register') }}">
